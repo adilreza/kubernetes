@@ -4,7 +4,7 @@ metadata:
   name: site2-service
 spec:
   selector:
-    app: site
+    app: site2
   ports:
   - protocol: "TCP"
     port: 80
