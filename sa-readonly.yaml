@@ -11,12 +11,8 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: dashboard-readonly
+  name: view
 subjects:
 - kind: ServiceAccount
   name: dashboard-readonly
   namespace: kube-system
-rules:
- - apiGroups: [""]
-   resources: ["*"]
-   verbs: ["get", "list", "watch"]
