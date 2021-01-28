@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: site-service
+  name: site2-service
 spec:
   selector:
     app: site
@@ -9,25 +9,25 @@ spec:
   - protocol: "TCP"
     port: 80
     targetPort: 80
-  type: NodePort
+  type: LoadBalancer
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: site
+  name: site2
 spec:
   selector:
     matchLabels:
-      app: site
-  replicas: 1
+      app: site2
+  replicas: 2
   template:
     metadata:
       labels:
-        app: site
+        app: site2
     spec:
       containers:
-      - name: site
+      - name: site2
         image: linuxgeekup/html-website:vtag1
         imagePullPolicy: Always
         ports:
