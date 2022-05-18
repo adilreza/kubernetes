@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: site
+spec:
+  selector:
+    matchLabels:
+      app: site
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: site
+    spec:
+      containers:
+      - name: site
+        image: shawon10/nginx-static-site
+        volumeMounts:                 
+        - name: config               
+          mountPath: /config/adil   
+          readOnly: true
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+      volumes:                          
+      - name: config                  
+        configMap:                   
+          name: demo-configmap
