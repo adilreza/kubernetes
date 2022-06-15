@@ -5,7 +5,7 @@ metadata:
   labels:
     app: web-app
 spec:
-  replicas: 5
+  replicas: 1
   selector:
     matchLabels:
       app: web-app
@@ -16,20 +16,22 @@ spec:
     spec:
       containers:
         - name: web-app
-          image: sdjemai/web-app-demo:1.0
+          image: nginx:latest
           imagePullPolicy: Always
           resources:
             limits:
               memory: "128Mi"
               cpu: "500m"
           ports:
-            - containerPort: 5000
-          env:
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
- 
+            - containerPort: 80
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            httpGet:
+              scheme: HTTP
+              path: /
+              port: 80
+
 ---
 apiVersion: v1
 kind: Service
@@ -40,5 +42,5 @@ spec:
     app: web-app
   ports:
     - protocol: TCP
-      port: 5000
-      targetPort: 5000
+      port: 80
+      targetPort: 80
