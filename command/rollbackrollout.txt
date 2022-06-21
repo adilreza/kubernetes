@@ -1,0 +1,5 @@
+# Perform  rolling update by running below command
+kubectl set image deployment httpd-deploy  httpd=httpd:2.4.43 --namespace xfusion --record=true
+
+#
+kubectl rollout undo deployment httpd-deploy  -n xfusion 
