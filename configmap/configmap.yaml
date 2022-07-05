@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+data:
+  config1: {{ .Files.Get "config.json" | quote }}
+  config2: {{ .Files.Get "dev/omg.json" | quote }}
