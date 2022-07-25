@@ -36,6 +36,6 @@ spec:
       volumes:
       - name: data
         emptyDir: {}
-      - name: my-redis-config
+      - name: redis-config
         configMap:
           name: my-redis-config
