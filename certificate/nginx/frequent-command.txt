@@ -1,0 +1,1 @@
+sudo ln -s /etc/nginx/sites-available/proddemo.conf /etc/nginx/sites-enabled/proddemo.conf
