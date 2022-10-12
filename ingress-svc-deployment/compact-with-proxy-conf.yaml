@@ -44,7 +44,7 @@ metadata:
     nginx.org/client-max-body-size: "150m"
     nginx.ingress.kubernetes.io/proxy-body-size: "150m"
 
-  name: sonarqube-ingress
+  name: site2-ingress
   namespace: default
 spec:
   rules:
