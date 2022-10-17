@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: site4-service
+spec:
+  selector:
+    app: site4
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 8080
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: site4
+spec:
+  selector:
+    matchLabels:
+      app: site4
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: site4
+    spec:
+      containers:
+      - name: site4
+        image: nayeemh67/mern-docker:20220315.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.org/proxy-connect-timeout: "60s"
+    nginx.org/proxy-read-timeout: "50s"
+    nginx.org/client-max-body-size: "150m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "150m"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+
+  name: site4-ingress
+  namespace: default
+spec:
+  rules:
+    - host: gcp-deploy.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: site4-service
+                port:
+                  number: 80
+            #path: /api/test(/|$)(.*)
+            path: /nayeem
+            pathType: ImplementationSpecific
