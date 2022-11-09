@@ -48,7 +48,7 @@ metadata:
   namespace: default
 spec:
   rules:
-    - host: mywebsite.gcp-deploy.com
+    - host: demo.web.deploy.com
       http:
         paths:
           - backend:
