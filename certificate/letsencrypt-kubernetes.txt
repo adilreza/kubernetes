@@ -1,0 +1,54 @@
+curl -LO https://github.com/jetstack/cert-manager/releases/download/v1.8.0/cert-manager.yaml
+kubectl create namespace cert-manager
+kubectl apply --validate=false -f cert-manager.yaml
+kubectl create ns ingress-nginx
+kubectl -n ingress-nginx apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.1.2.0/deploy/static/provider/cloud/deploy.yaml
+
+apiVersion: cert-manager.io/v1                             
+kind: ClusterIssuer                             
+metadata:                               
+  name: letsencrypt-cluster-issuer                             
+spec:                            
+  acme:                                 
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: adilreza043@gmail.com
+    privateKeySecretRef:                                                                   
+      name: letsencrypt-cluster-issuer-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+
+kubectl apply -f cert-issuer.yaml
+# view the 
+kubectl describe clusterissuer letsencrypt-cluster-issuer
+
+
+
+Ingress
+----------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+  name: logger-api-ingress
+  namespace: web1-dev
+spec:
+  tls:
+  - hosts:
+    - logger.dev.calltrack.co
+    secretName: letsencrypt-cluster-issuer
+  rules:
+    - host: logger.dev.calltrack.co
+      http:
+        paths:
+          - backend:
+              service:
+                name: logger-api-service
+                port:
+                  number: 80
+            #path: /api/test(/|$)(.*)
+            path: /
+            pathType: ImplementationSpecific
