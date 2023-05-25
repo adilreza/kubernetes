@@ -5,32 +5,16 @@ metadata:
   namespace: web1-prod
 
 ---
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
-  name: web1-prod-user-full-access
+  name: web1-prod-admin
   namespace: web1-prod
-rules:
-  - apiGroups: ["", "extensions", "apps", "namespace"]
-    resources: ["*"]
-    verbs: ["*"]
-  - apiGroups: ["batch"]
-    resources:
-      - jobs
-      - cronjobs
-    verbs: ["*"]
-
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: web1-prod-user-view
-  namespace: web1-prod
-subjects:
-  - kind: ServiceAccount
-    name: web1-prod-user
-    namespace: web1-prod
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: web1-prod-full-access
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: web1-prod-user
+  namespace: web1-prod
