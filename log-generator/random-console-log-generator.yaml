@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-generator
+spec:
+  selector:
+    matchLabels:
+      app: site2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: site2
+    spec:
+      containers:
+      - name: site2
+        image: linuxgeekup/rclg:latest
+        imagePullPolicy: Always
