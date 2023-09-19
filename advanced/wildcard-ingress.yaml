@@ -1,0 +1,72 @@
+# *.dev-test.something.co -> IP_ADDRESS
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: act-rnd-service
+  namespace: dev-test
+spec:
+  selector:
+    app: act-rnd
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: act-rnd
+  namespace: dev-test
+spec:
+  selector:
+    matchLabels:
+      app: act-rnd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: act-rnd
+    spec:
+      containers:
+      - name: act-rnd
+        image: linuxgeekup/rnd-magic-box:best15
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: dockerhub-cred
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer-devtest-nginx
+    kubernetes.io/ingress.class: nginx
+    nginx.org/proxy-connect-timeout: "60s"
+    nginx.org/proxy-read-timeout: "50s"
+    nginx.org/client-max-body-size: "150m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "150m"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+
+  name: act-rnd-ingress
+  namespace: dev-test
+spec:
+  # tls:
+  # - hosts:
+  #   - "*.dev-test.something.co"
+  #   secretName: letsencrypt-cluster-issuer-devtest-nginx
+  rules:
+    - host: "*.dev-test.something.co"
+      http:
+        paths:
+          - backend:
+              service:
+                name: act-rnd-service
+                port:
+                  number: 80
+            pathType: ImplementationSpecific
