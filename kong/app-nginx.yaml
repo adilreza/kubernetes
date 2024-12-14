@@ -52,17 +52,15 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nginx-ingress
-  namespace: app-nginx
   annotations:
-    konghq.com/protocol: http
-    konghq.com/strip-path: "true"  # Optional: Strip the path before forwarding to service
+    konghq.com/strip-path: 'true'
 spec:
+  ingressClassName: kong
   rules:
-  - host: nginx.yourdomain.com  # Replace with your domain or use localhost
-    http:
+  - http:
       paths:
       - path: /
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: nginx-service
