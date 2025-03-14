@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-magic-box
+  labels:
+    app: magic-box
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: magic-box
+  template:
+    metadata:
+      labels:
+        app: magic-box
+    spec:
+      securityContext:  # Pod-Level Security
+        runAsUser: 1000
+        runAsGroup: 2000
+        fsGroup: 3000
+      containers:
+      - name: magic-box
+        image: linuxgeekup/rnd-magic-box:best15
+        securityContext:  # Container-Level Security
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          privileged: false
+          capabilities:
+            drop: ["ALL"]
+        ports:
+        - containerPort: 80  # Updated to use port 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: magic-box-service
+spec:
+  selector:
+    app: magic-box
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80  # Matches the container's port
+  type: ClusterIP
