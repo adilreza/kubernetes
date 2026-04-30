@@ -3,11 +3,13 @@ kind: Service
 metadata:
   name: nginx-test
   namespace: default
+  annotations:
+    konghq.com/plugins: kong.rate-limit-rancher
 spec:
   selector:
-    app: nginx-test
+    app: nginx
   ports:
-  - port: 80
+  - name: http
+    port: 80
     targetPort: 80
-    protocol: TCP
   type: ClusterIP
